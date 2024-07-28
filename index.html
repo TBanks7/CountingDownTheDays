@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Time Together Counter with Image Carousel</title>
+    <style>
+        body, html {
+            height: 100%;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            overflow: hidden;
+        }
+        .bg-slideshow {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+        .bg-slideshow li {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            background-size: cover;
+            background-position: center center;
+            background-repeat: no-repeat;
+            opacity: 0;
+            z-index: 0;
+            animation: imageAnimation 25s linear infinite;
+        }
+        .bg-slideshow li:nth-child(1) { background-image: url('path_to_image1.jpg') }
+        .bg-slideshow li:nth-child(2) {
+            background-image: url('IMG-20240727-WA0009.jpg');
+            animation-delay: 5s;
+        }
+        .bg-slideshow li:nth-child(3) {
+            background-image: url('IMG-20240727-WA0018.jpg');
+            animation-delay: 10s;
+        }
+        .bg-slideshow li:nth-child(4) {
+            background-image: url('IMG-20240727-WA0034.jpg');
+            animation-delay: 15s;
+        }
+        .bg-slideshow li:nth-child(5) {
+            background-image: url('IMG-20240727-WA0017.jpg');
+            animation-delay: 20s;
+        }
+        @keyframes imageAnimation { 
+            0% { opacity: 0; animation-timing-function: ease-in; }
+            10% { opacity: 1; animation-timing-function: ease-out; }
+            20% { opacity: 1 }
+            30% { opacity: 0 }
+            100% { opacity: 0 }
+        }
+        #counter {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            text-align: center;
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 2s;
+        }
+        h1 {
+            color: #ff69b4;
+        }
+        #timer {
+            font-size: 1.5em;
+            margin-top: 20px;
+        }
+        #animated-text-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #FFB6C1;
+            transition: opacity 1s;
+            z-index: 1;
+        }
+        #animated-text {
+            font-size: 2em;
+            text-align: center;
+            color: #FF1493;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+            background-color: rgba(255, 182, 193, 0.7);
+            padding: 20px;
+            border-radius: 10px;
+            position: relative;
+            transition: opacity 0.5s;
+        }
+        .heart {
+            position: absolute;
+            width: 40px;
+            height: 40px;
+            background: #FF69B4;
+            transform: rotate(45deg);
+            animation: heartbeat 1s infinite, float 3s ease-in-out infinite;
+        }
+        .heart::before,
+        .heart::after {
+            content: '';
+            width: 40px;
+            height: 40px;
+            background: #FF69B4;
+            border-radius: 50%;
+            position: absolute;
+        }
+        .heart::before {
+            left: -20px;
+        }
+        .heart::after {
+            top: -20px;
+        }
+        @keyframes heartbeat {
+            0% { transform: rotate(45deg) scale(0.8); }
+            5% { transform: rotate(45deg) scale(0.9); }
+            10% { transform: rotate(45deg) scale(0.8); }
+            15% { transform: rotate(45deg) scale(1); }
+            50% { transform: rotate(45deg) scale(0.8); }
+            100% { transform: rotate(45deg) scale(0.8); }
+        }
+        @keyframes float {
+            0% { transform: rotate(45deg) translateY(0px); }
+            50% { transform: rotate(45deg) translateY(-20px); }
+            100% { transform: rotate(45deg) translateY(0px); }
+        }
+    </style>
+</head>
+<body>
+    <ul class="bg-slideshow">
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+        <li></li>
+    </ul>
+
+    <div id="animated-text-container">
+        <div id="animated-text"></div>
+    </div>
+    
+    <div id="counter">
+        <h1>Our Time Together</h1>
+        <div id="timer"></div>
+    </div>
+
+    <script>
+        const messages = [
+            "Happy 3 month Anniversary babe",
+            "These past 3 months with you have been amazing",
+            "I am madly in love with you"
+        ];
+        let currentMessage = 0;
+        const animatedTextContainer = document.getElementById('animated-text-container');
+        const animatedText = document.getElementById('animated-text');
+        const counter = document.getElementById('counter');
+
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('heart');
+            heart.style.left = (Math.random() * 60 + 20) + '%';
+            heart.style.top = (Math.random() * 40 + 30) + '%';
+            animatedTextContainer.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 3000);
+        }
+
+        function showNextMessage() {
+            if (currentMessage < messages.length) {
+                animatedText.style.opacity = 0;
+                setTimeout(() => {
+                    animatedText.textContent = messages[currentMessage];
+                    animatedText.style.opacity = 1;
+                    currentMessage++;
+                    for (let i = 0; i < 5; i++) {
+                        setTimeout(createHeart, i * 500);
+                    }
+                    setTimeout(showNextMessage, 3000);
+                }, 500);
+            } else {
+                animatedTextContainer.style.opacity = 0;
+                setTimeout(() => {
+                    animatedTextContainer.style.display = 'none';
+                    counter.style.opacity = 1;
+                    startCarousel();
+                }, 1000);
+            }
+        }
+
+        showNextMessage();
+
+        // Set the date when you started dating
+        const startDate = new Date("April 28, 2024 00:00:00").getTime();
+
+        function updateCounter() {
+            const now = new Date().getTime();
+            const difference = now - startDate;
+
+            const years = Math.floor(difference / (1000 * 60 * 60 * 24 * 365.25));
+            const months = Math.floor((difference % (1000 * 60 * 60 * 24 * 365.25)) / (1000 * 60 * 60 * 24 * 30.44));
+            const weeks = Math.floor((difference % (1000 * 60 * 60 * 24 * 30.44)) / (1000 * 60 * 60 * 24 * 7));
+            const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 7)) / (1000 * 60 * 60 * 24));
+            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+            let result = "";
+            if (years > 0) result += years + (years == 1 ? " year " : " years ");
+            if (months > 0) result += months + (months == 1 ? " month " : " months ");
+            if (weeks > 0) result += weeks + (weeks == 1 ? " week " : " weeks ");
+            if (days > 0) result += days + (days == 1 ? " day " : " days ");
+            result += hours + (hours == 1 ? " hour " : " hours ");
+            result += minutes + (minutes == 1 ? " minute " : " minutes ");
+            result += seconds + (seconds == 1 ? " second" : " seconds");
+
+            document.getElementById("timer").innerHTML = result;
+        }
+
+        setInterval(updateCounter, 1000);
+        updateCounter();
+
+        function startCarousel() {
+            const slideshow = document.querySelector('.bg-slideshow');
+            const slides = slideshow.querySelectorAll('li');
+            let currentSlide = 0;
+
+            function showSlide(index) {
+                slides.forEach((slide, i) => {
+                    slide.style.opacity = i === index ? 1 : 0;
+                });
+            }
+
+            function nextSlide() {
+                currentSlide = (currentSlide + 1) % slides.length;
+                showSlide(currentSlide);
+            }
+
+            showSlide(currentSlide);
+            setInterval(nextSlide, 5000); // Change slide every 5 seconds
+        }
+    </script>
+</body>
+</html>
